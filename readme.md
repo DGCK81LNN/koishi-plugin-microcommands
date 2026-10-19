@@ -2,12 +2,12 @@
 
 [![npm](https://img.shields.io/npm/v/koishi-plugin-microcommands?style=flat-square)](https://www.npmjs.com/package/koishi-plugin-microcommands)
 
-通过指令输入 JavaScript 代码来定义指令！
+Microcommands 允许您使用 JavaScript 代码便捷地为 Koishi 机器人创建指令。
 
 
 ## 用法介绍
 
-微指令允许管理员使用指令`microcommand`来定义指令。
+管理员可使用指令`microcommand`来定义指令。
 
   * `microcommand define <name> <code...>`
 
@@ -115,6 +115,12 @@ locale("en-US", {
   }
 }
 ~~~
+
+### 控制台编辑器
+
+安装并启用 Koishi 控制台和 `koishi-plugin-codemirror` 后，插件会在控制台活动栏注册“微指令”页面，路径为 `/microcommands`，需要 4 级权限，可以在页面中搜索和编辑已保存的微指令，也可以新建、保存及删除微指令定义。新建的定义只有在保存后才会写入数据库；刷新会重新读取列表和源代码。切换、刷新或删除时，如果存在未保存的更改，页面会先请求确认。
+
+控制台和 CodeMirror 插件是可选依赖；未安装时仍可通过上面的 `microcommand` 指令和服务 API 管理微指令。
 
 ### 服务 API
 

@@ -12,6 +12,9 @@ import {
   SessionError,
   h,
 } from "koishi"
+import * as MicrocommandsConsole from "./console"
+
+export type {} from "./console"
 
 declare module "koishi" {
   interface Context {
@@ -111,6 +114,7 @@ class MicrocommandsService extends Service {
       })
 
     ctx.i18n.define("zh-CN", require("./locales/zh-CN"))
+    ctx.plugin(MicrocommandsConsole, this)
 
     this._loadAll()
   }
