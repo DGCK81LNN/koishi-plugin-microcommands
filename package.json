@@ -1,0 +1,43 @@
+{
+  "name": "koishi-plugin-microcommands",
+  "description": "Define Koishi commands using commands",
+  "version": "1.0.0-alpha",
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
+  "files": [
+    "lib",
+    "types.d.ts"
+  ],
+  "license": "MIT",
+  "author": "DGCK81LNN <triluolnn@163.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitee.com/DGCK81LNN/lnnbot-miniplugs.git"
+  },
+  "bugs": {
+    "url": "https://gitee.com/DGCK81LNN/lnnbot-miniplugs/issues"
+  },
+  "homepage": "https://gitee.com/DGCK81LNN/lnnbot-miniplugs/blob/master/plugins/common/microcommands.js",
+  "keywords": [
+    "koishi",
+    "javascript",
+    "js"
+  ],
+  "koishi": {
+    "description": {
+      "en": "Define Koishi commands using commands",
+      "zh-CN": "通过指令输入 JavaScript 代码来定义指令！"
+    },
+    "locales": [
+      "zh-CN"
+    ],
+    "service": {
+      "implements": [
+        "microcommands"
+      ]
+    }
+  },
+  "peerDependencies": {
+    "koishi": "^4.18.0"
+  }
+}

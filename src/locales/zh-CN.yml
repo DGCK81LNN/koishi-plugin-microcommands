@@ -1,0 +1,21 @@
+commands:
+  microcommand:
+    description: 微指令…
+    define:
+      description: 定义微指令
+      messages:
+        invalid-name: 指令名无效…
+        saved: 已保存微指令 {0}。
+    list:
+      description: 显示当前注册的微指令列表
+      messages:
+        none: 当前未注册任何微指令。
+        header: 当前注册的微指令有：
+    show:
+      description: 查询指定微指令的源代码
+      messages:
+        not-found: 微指令 {0} 不存在…
+    remove:
+      description: 删除微指令
+      messages:
+        deleted: 已删除微指令 {0}。
