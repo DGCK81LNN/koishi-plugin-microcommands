@@ -1,17 +1,15 @@
 <template>
   <k-layout class="page-microcommands" menu="microcommands">
-    <template #header>
-      微指令{{ currentName ? ' - ' + currentName : '' }}
-    </template>
+    <template #header>微指令{{ currentName ? " - " + currentName : "" }}</template>
 
     <template #left>
-      <el-scrollbar class="command-scrollbar">
+      <el-scrollbar ref="scrollbar" class="command-scrollbar">
         <div class="search">
           <el-input v-model="filter" #suffix>
             <k-icon name="search"></k-icon>
           </el-input>
         </div>
-        <div class="command-list">
+        <div class="command-list" ref="listEl">
           <button
             v-for="name in filteredNames"
             :key="name"
@@ -31,6 +29,7 @@
       <k-codemirror-editor
         ref="editor"
         v-if="currentName"
+        :key="currentName"
         v-model="code"
         language="javascript"
         scroll-past-end
@@ -121,7 +120,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, onMounted, ref } from "vue"
+import { computed, nextTick, onActivated, onMounted, ref } from "vue"
 import { send, useContext } from "@koishijs/client"
 
 const ctx = useContext()
@@ -159,6 +158,8 @@ const nameInput = ref<{ focus: () => void }>()
 const confirmationVisible = ref(false)
 const confirmationMessage = ref("")
 const confirmationAction = ref("")
+const listEl = ref<HTMLElement>()
+const scrollbar = ref<{ setScrollTop(value: number): void }>()
 const editor = ref<{
   selectAll(): void
   undo(): void
@@ -235,7 +236,7 @@ function cancelConfirmation(done: () => void) {
 }
 
 async function canDiscard() {
-  return !dirty.value || await askConfirmation("放弃未保存的更改？", "放弃")
+  return !dirty.value || (await askConfirmation("放弃未保存的更改？", "放弃"))
 }
 
 function clearSelection() {
@@ -264,7 +265,7 @@ async function loadCommand(name: string) {
 
 async function selectCommand(name: string) {
   if (name === currentName.value && !isDraft.value) return
-  if (busy.value || !await canDiscard()) return
+  if (busy.value || !(await canDiscard())) return
   await loadCommand(name)
 }
 
@@ -275,7 +276,7 @@ async function fetchNames() {
 }
 
 async function refresh() {
-  if (busy.value || !await canDiscard()) return
+  if (busy.value || !(await canDiscard())) return
   const keepName = isDraft.value ? "" : currentName.value
   busy.value = true
   error.value = ""
@@ -299,7 +300,7 @@ async function refresh() {
 }
 
 async function createDraft() {
-  if (busy.value || !await canDiscard()) return
+  if (busy.value || !(await canDiscard())) return
   draftName.value = ""
   nameError.value = ""
   nameDialogVisible.value = true
@@ -352,8 +353,8 @@ async function save() {
 }
 
 async function remove() {
-  if (!currentName.value || isDraft.value || busy.value || !await canDiscard()) return
-  if (!await askConfirmation(`删除微指令“${currentName.value}”？`, "删除")) return
+  if (!currentName.value || isDraft.value || busy.value || !(await canDiscard())) return
+  if (!(await askConfirmation(`删除微指令“${currentName.value}”？`, "删除"))) return
   busy.value = true
   error.value = ""
   try {
@@ -369,13 +370,21 @@ async function remove() {
 }
 
 onMounted(refresh)
+
+onActivated(async () => {
+  await nextTick()
+  const active = listEl.value?.querySelector(".active") as HTMLElement | null
+  const container = listEl.value?.closest(".el-scrollbar__wrap")
+  if (!active || !container) return
+  const containerRect = container.getBoundingClientRect()
+  const activeRect = active.getBoundingClientRect()
+  const offset = activeRect.top + activeRect.height / 2 -
+    (containerRect.top + containerRect.height / 2)
+  scrollbar.value?.setScrollTop(container.scrollTop + offset)
+})
 </script>
 
 <style scoped>
-.page-microcommands {
-  height: 100%;
-}
-
 .search {
   padding: 0 1.5rem;
 }
@@ -388,7 +397,7 @@ onMounted(refresh)
 }
 
 .command-list {
-  margin-top: 0.5rem;
+  margin: 0.5rem 0;
 }
 
 .command-item {
@@ -407,11 +416,16 @@ onMounted(refresh)
   text-align: left;
   text-overflow: ellipsis;
   white-space: nowrap;
+  transition: var(--color-transition);
 }
 
 .command-item:hover,
 .command-item.active {
   background: var(--k-color-hover, var(--el-fill-color-light));
+}
+
+.command-item.active {
+  color: var(--active);
 }
 
 .editor-pane {
