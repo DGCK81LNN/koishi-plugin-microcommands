@@ -26,8 +26,8 @@
   ],
   "koishi": {
     "description": {
-      "en": "Define Koishi commands using commands",
-      "zh-CN": "通过指令输入 JavaScript 代码来定义指令！"
+      "en": "Define simple commands in JavaScript",
+      "zh-CN": "使用 JavaScript 代码定义简单的指令"
     },
     "locales": [
       "zh-CN"
